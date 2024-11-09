@@ -32,6 +32,7 @@ void setup() {
 
     // сбросить счётчик энкодера
     eb.counter = 0;
+    Serial.print("start");
 }
 
 void loop() {
