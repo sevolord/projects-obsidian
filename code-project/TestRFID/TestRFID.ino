@@ -1,43 +1,43 @@
-/*
-RC522	  Arduino 
-GND	    GND	
-3,3V	  3,3V	
-MOSI	  11	
-MISO	  12
-SCK	    13	
-SDA	    10	
-RST	    9	
-*/
-
-
-
 #include "SPI.h"
 #include "MFRC522.h"
 
-#define RST_PIN  9 // RES pin
-#define SS_PIN  10 // SDA (SS) pin
+// Определение пинов для RC522
+#define RST_PIN PB3  // Сброс
+#define SS_PIN  PB4  // SDA (SS)
+// MOSI - PB5
+// MISO - PB6 
+// SCK  - PB7
 
-MFRC522 mfrc522(SS_PIN, RST_PIN); // создание объекта mfrc522
+MFRC522 mfrc522(SS_PIN, RST_PIN); // Создание объекта mfrc522
 
 void setup() {
-   Serial.begin(9600);
-   SPI.begin();
-   mfrc522.PCD_Init();
-   delay(4);
-   mfrc522.PCD_DumpVersionToSerial();
-   Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
+  Serial.begin(9600);
+
+  // Инициализация SPI
+  SPI.begin(); 
+  
+  // Настройка пинов
+  pinMode(RST_PIN, OUTPUT);
+  pinMode(SS_PIN, OUTPUT);
+
+  // Инициализация RC522
+  mfrc522.PCD_Init();
+  delay(4);
+  
+  mfrc522.PCD_DumpVersionToSerial();
+  Serial.println(F("Scan PICC to see UID, SAK, type, and data blocks..."));
 }
 
 void loop() {
-   // сброс цикла, если на считывателе нет карты
-   if ( ! mfrc522.PICC_IsNewCardPresent()) {
-      return;
-   }
+  // Сброс цикла, если на считывателе нет карты
+  if (!mfrc522.PICC_IsNewCardPresent()) {
+    return;
+  }
 
-   if ( ! mfrc522.PICC_ReadCardSerial()) {
-      return;
-   }
+  if (!mfrc522.PICC_ReadCardSerial()) {  
+    return;
+  }
 
-   // вывод информации о карте на монитор порта
-   mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
+  // Вывод информации о карте на монитор порта
+  mfrc522.PICC_DumpToSerial(&(mfrc522.uid));
 }
